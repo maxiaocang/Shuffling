@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>JS淡入淡出</title>
+		<style type="text/css">
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+			ul{
+				position: relative;
+				width: 720px;
+				height: 484px;
+				margin: 30px auto;
+			}
+			li{
+				list-style: none;
+				position: absolute;
+				opacity: 0;
+				transition: opacity 1s;
+				-moz-transition: opacity 1s; /* Firefox 4 */
+				-webkit-transition: opacity 1s; /* Safari 和 Chrome */
+				-o-transition: opacity 1s; /* Opera */
+			}
+			.imgOn{
+				opacity: 1;
+			}
+			#prev,#next{
+				position: absolute;
+				display: none;
+				cursor: pointer;
+			}
+			#prev{
+				left: 0px;
+				top: 200px;
+			}
+			#next{
+				right: 0px;
+				top: 200px;
+			}
+			#imgList:hover #prev{
+				display: block;
+			}
+			#imgList:hover #next{
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<ul id="imgList">
+			<!-- 图片部分 -->
+			<li class="imgOn">
+				<a href="#"><img src="img/1.jpg" width="720px" height="480px" alt="puss in boots1"></a>
+			</li>
+			<li>
+				<a href="#"><img src="img/2.png" width="720px" height="480px" alt="puss in boots2"></a>
+			</li>
+			<li>
+				<a href="#"><img src="img/3.jpg" width="720px" height="480px" alt="puss in boots3"></a>
+			</li>
+			<li>
+				<a href="#"><img src="img/4.jpg" width="720px" height="480px" alt="puss in boots4"></a>
+			</li>
+			<li>
+				<a href="#"><img src="img/5.jpg" width="720px" height="480px" alt="puss in boots5"></a>
+			</li>
+			<img id="next" src="img/next.png"/>
+			<img id="prev" src="img/prev.png"/>
+		</ul>
+	</body>
+	<script type="text/javascript">
+		var uls = document.getElementById("imgList");
+		var lis = document.getElementById("imgList").getElementsByTagName("li");
+		var prev = document.getElementById("prev");
+		var next = document.getElementById("next");
+		var timer = null;
+		var index = 0;
+		
+		prev.onclick = function(){
+			index -= 1;
+			if(index == -1){
+				index = lis.length - 1;
+			}
+			for(var i=0; i<lis.length; i++){
+				lis[i].className = "";
+			}
+			lis[index].className = "imgOn";
+		}
+		next.onclick = function(){
+			index += 1;
+			if(index == lis.length){
+				index = 0;
+			}
+			for(var i=0; i<lis.length; i++){
+				lis[i].className = "";
+			}
+			lis[index].className = "imgOn";
+			startMove();
+		}
+		play();
+		uls.onmouseover = function(){
+			clearInterval(timer);
+		}
+		uls.onmouseout = function(){
+			play();
+		}
+		function startMove(){
+			index += 1;
+			if(index == lis.length){
+				index = 0;
+			}
+			for(var i=0; i<lis.length; i++){
+				lis[i].className = "";
+			}
+			lis[index].className = "imgOn";
+		}
+		function play(){
+			timer = setInterval(function(){
+				startMove();
+			},2000)
+		}
+			
+	</script>
+</html>

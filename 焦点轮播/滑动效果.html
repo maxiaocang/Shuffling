@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>焦点轮播</title>
+		<style type="text/css">
+			/*@charset "utf-8";*/
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+			#container{
+				position: relative;
+				width: 720px;
+				height: 480px;
+				overflow: hidden;
+				margin: 0 auto;
+			}
+			#list{
+				position: relative;
+				width: 5040px;
+				height: 480px;
+				margin: 0 auto;
+				left: -720px;
+			}
+			#list img{
+				float: left;
+			}
+			#prev,#next{
+				position: absolute;
+				cursor: pointer;
+			}
+			#prev{
+				top: 200px;
+				left: 10px;
+				opacity: 0.7;
+				/*transition: all 5s;*/
+			}
+			#next{
+				top: 200px;
+				right: 10px;
+				opacity: 0.7;
+				/*transition: all 5s;*/
+			}
+			#button{
+				position: absolute;
+				width: 100px;
+				height: 10px;
+				top: 450px;
+				left: 275px;
+				z-index: 5;
+			}
+			span{
+				display: block;
+				width: 10px;
+				height: 10px;
+				background-color: darkgray;
+				border-radius: 10px;
+				float: left;
+				margin-left: 10px;
+				cursor: pointer;
+			}
+			.select{
+				background-color: darkorange;
+			}
+			#prev,#next{
+				display: none;
+			}
+			#container:hover #prev{
+				display: block;
+			}
+			#container:hover #next{
+				display: block;
+			}
+		</style>
+		<script type="text/javascript">
+			window.onload = function(){
+				var list = document.getElementById('list');
+				var prev = document.getElementById('prev');
+				var next = document.getElementById('next');
+				var buttons = document.getElementById('button').getElementsByTagName('span');
+				prev.onclick = function(){
+					if(index == 1){
+						index = 5;
+					}
+					else{
+						index -=1; //点击一次，index累加一次，以此确定对应第几张图片
+					}
+				    showButton();
+				    if(startMoved == true) //如果图片切换完成，则可进行下一次切换（防止点击太快图片没有切换完便要进行下一次切换造成电脑卡顿）
+				    {
+						startMove(720);
+					}
+				}
+				next.onclick = function(){
+					if(index == 5){
+						index = 1;
+					}
+					else{
+						index +=1;//点击一次，index累加一次，以此确定对应第几张图片
+					}
+				    showButton();
+					if(startMoved == true)
+				    {
+						startMove(-720);
+					}
+				}
+				for(var i=0;i<buttons.length;i++){
+					buttons[i].onclick = function(){
+						if(index == myIndex){  //如果点击的按钮对应当前显示的图片，则if后面的语句不执行；
+							return; //return语句：如果条件成立，则不执行后面的语句
+						}
+						var myIndex = parseInt(this.getAttribute('index'));
+						var offset = 720*(index-myIndex);
+					   if(startMoved == true)
+					    {
+							startMove(offset);
+						}
+						index = myIndex;
+						showButton();
+					}
+				}
+		
+				play();
+				container.onmouseover = function(){
+					stop();
+				}
+				container.onmouseout = function(){
+					play();
+				}
+			}
+			
+			var startMoved = true; //定义一个布尔值变量，用来判断一张图片是否切换完成
+			var index = 1;  //假设当前为第一张图片
+			function showButton(){
+				var buttons = document.getElementById('button').getElementsByTagName('span');
+				//通过循环先把所有的高亮显示取消
+				for(var i = 0; i < buttons.length; i++){
+					if(buttons[i].className == 'select'){
+						buttons[i].className = '';
+					    break;//找到高亮并取消高亮显示后，退出整个循环（写在if中）（continue是退出当前循环）
+					}
+				}
+				//当前图片对应的sapn设置为高亮显示
+				buttons[index - 1].className = 'select'; 
+			}
+	//添加定时器，图片自动轮播	
+			var timer = null;
+			function play(){
+				timer = setInterval(function(){
+					next.onclick();
+				},2000)
+			}
+	//清除定时器		
+			function stop(){
+				clearInterval(timer); 
+			}
+    //图片切换
+			function startMove(offset){
+				startMoved = false;  
+				var list = document.getElementById('list');
+				var newleft = list.offsetLeft + offset;
+				var time = 600;//位移总时间
+				var interval = 10;//每次位移间隔
+				var speed = offset/(time/interval);//每次位移间隔量
+				function go(){
+					if((speed>0 && parseInt(list.offsetLeft)<newleft)||(speed<0 && parseInt(list.offsetLeft)>newleft)){
+						list.style.left = parseInt(list.offsetLeft)+speed+'px';
+						setTimeout(go,interval);
+					}
+					else{
+						startMoved = true;//表示一张图片切换完成
+						if(list.offsetLeft >-720){
+							list.style.left = -3600 +'px';
+						}
+						if(list.offsetLeft < -3600){
+							list.style.left = -720 +'px';
+						}
+					}
+				}
+				go();
+			}			
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="list">
+				<img src="img/5.jpg"/>
+				<img src="img/1.jpg"/>
+				<img src="img/2.png"/>
+				<img src="img/3.jpg"/>
+				<img src="img/4.jpg"/>
+				<img src="img/5.jpg"/>
+				<img src="img/1.jpg"/>
+			</div>
+			<img src="img/prev.png" id="prev"/>
+			<img src="img/next.png" id="next"/>
+			<div id="button">
+				<span index="1" class="select"></span>
+				<span index="2"></span>
+				<span index="3"></span>
+				<span index="4"></span>
+				<span index="5"></span>
+			</div>
+		</div>
+	</body>
+</html>

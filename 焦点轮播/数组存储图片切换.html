@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>数组存储图片切换</title>
+		<style type="text/css">
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+			#box{
+				position: relative;
+				width: 720px;
+				margin: 30px auto;
+			}
+			#prev,#next{
+				position: absolute;
+				display: none;
+				cursor: pointer;
+			}
+			#prev{
+				left: 0px;
+				top: 200px;
+			}
+			#next{
+				right: 0px;
+				top: 200px;
+			}
+			#box:hover #prev{
+				display: block;
+			}
+			#box:hover #next{
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<img id="img" src="img/1.jpg"/>
+			<img id="next" src="img/next.png"/>
+			<img id="prev" src="img/prev.png"/>
+		</div>
+		<script type="text/javascript">
+			var images = ["img/1.jpg","img/2.png","img/3.jpg","img/4.jpg","img/5.jpg"];
+			var img = document.getElementById("img");
+			var obox = document.getElementById("box");
+			var prev = document.getElementById("prev");
+			var next = document.getElementById("next");
+			var index = 0;
+			var timer = null;
+			
+			prev.onclick = function(){
+				index--;
+				if(index == -1){
+					index = images.length - 1;
+				}
+				img.src = images[index];
+//				console.log(index);
+			}
+			next.onclick = function(){
+				startMove();
+//				console.log(index);
+			}
+			play();
+			obox.onmouseover = function(){
+				clearInterval(timer);
+			}
+			obox.onmouseout = function(){
+				play();
+			}
+			function startMove(){
+				index++;
+				if(index == images.length){
+					index = 0;
+				}
+				img.src = images[index];
+//				console.log(index);
+			}
+			function play(){
+				timer = setInterval(function(){
+					startMove();
+				},2000)
+			}
+		</script>
+	</body>
+</html>
